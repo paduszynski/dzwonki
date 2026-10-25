@@ -1,9 +1,10 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Cymbałki – graj ze mną!</title>
+<title>Dzwonki 1.1 – graj ze mną!</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f3f1ec;--fg:#151515;--panel:#ffffff;--line:#15151518;--muted:#15151599;
@@ -44,11 +45,13 @@ button:focus-visible{outline:3px solid var(--yel);outline-offset:3px}
 .xylo{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--panel);border-radius:24px;padding:20px 22px}
 .blackrow{position:relative;height:36%;flex:none}
 .whiterow{flex:1;display:grid;grid-template-columns:repeat(16,1fr);gap:6px;align-items:start;margin-top:8px;min-height:0}
-.bar{position:relative;border:none;border-radius:8px;cursor:pointer;font:inherit;font-weight:700;display:flex;align-items:flex-end;justify-content:center;padding:0 0 10px;transition:transform .08s,background .15s}
+.bar{position:relative;border:none;border-radius:8px;cursor:pointer;font:inherit;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;line-height:1.05;padding:0 0 10px;transition:transform .08s,background .15s}
 .bar::before,.bar::after{content:"";position:absolute;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:currentColor;opacity:.35}
 .bar::before{top:12px}.bar::after{bottom:38px}
 .w{background:#d9dce1;color:#2a2f38;font-size:clamp(.95rem,1.6vw,1.3rem)}
-.b{position:absolute;top:0;background:#1a1a1a;color:#bbb;font-size:.78rem}
+.b{position:absolute;top:0;background:#1a1a1a;color:#bbb;font-size:.78rem;font-weight:600}
+.w small{font-size:.6em;font-weight:600;opacity:.8}
+.w sup{font-size:.5em;letter-spacing:-.05em;vertical-align:.6em}
 :root[data-theme="dark"] .b,:root:not([data-theme="light"]) .b{}
 @media (prefers-color-scheme:dark){.b{background:#000;box-shadow:inset 0 0 0 1px #ffffff22}}
 .bar.hit{transform:translateY(3px) scale(.97)}
@@ -115,7 +118,7 @@ button:focus-visible{outline:3px solid var(--yel);outline-offset:3px}
 <body>
 <div class="app">
   <aside>
-    <div class="logo"><h1>Cymbałki</h1></div>
+    <div class="logo"><h1>Dzwonki 1.1</h1></div>
     <div class="songs" id="songs" role="group" aria-label="Piosenki"></div>
   </aside>
   <section>
@@ -138,30 +141,33 @@ button:focus-visible{outline:3px solid var(--yel);outline-offset:3px}
 </div>
 <div class="party" id="party"></div>
 <script>
-// 16 srebrnych: F G A B C D E F G A B C D E F G (B = polskie H)
-const WN=["F","G","A","B","C","D","E","F","G","A","B","C","D","E","F","G"];
-const SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
-const OCT=[5,5,5,5,6,6,6,6,6,6,6,7,7,7,7,7];
+// 16 klawiszy jak na naszych dzwonkach: G A H C D E F G A H C D E F G A
+const WN=["G","A","H","C","D","E","F","G","A","H","C","D","E","F","G","A"];
+const SOLF={C:"do",D:"re",E:"mi",F:"fa",G:"sol",A:"la",H:"si"};
+const OCTMARK={3:"'''",10:"''''"};
+const BN={C:["cis","des"],D:["dis","es"],F:["fis","ges"],G:["gis","as"],A:["ais","b"]};
+const SEMI={C:0,D:2,E:4,F:5,G:7,A:9,H:11};
+const OCT=[5,5,5,6,6,6,6,6,6,6,7,7,7,7,7,7];
 const freq=(n,o,s=0)=>440*Math.pow(2,((o+1)*12+SEMI[n]+s-69)/12);
 const COLORS=["#e63b2e","#f28c00","#f4b400","#12a150","#1f4fd8","#6a3fd1","#d63384"];
-const BLACK_AFTER=[0,1,2,4,5,7,8,9,11,12,14];
+const BLACK_AFTER=[0,1,3,4,6,7,8,10,11,13,14];
 
 const whiteRow=document.getElementById("whiterow"),blackRow=document.getElementById("blackrow");
 const white=WN.map((n,i)=>{
-  const b=document.createElement("button");b.className="bar w";b.textContent=n;
-  b.style.height=(100-i*2.6)+"%";b.style.setProperty("--gc",COLORS["CDEFGAB".indexOf(n)]);
+  const b=document.createElement("button");b.className="bar w";b.innerHTML=`<span>${n}${OCTMARK[i]?`<sup>${OCTMARK[i]}</sup>`:""}</span><small>${SOLF[n]}</small>`;
+  b.style.height=(100-i*2.6)+"%";b.style.setProperty("--gc",COLORS["CDEFGAH".indexOf(n)]);
   b.setAttribute("aria-label","Klawisz "+n);b.dataset.f=freq(n,OCT[i]);
   whiteRow.appendChild(b);return b;
 });
 BLACK_AFTER.forEach((i,k)=>{
-  const b=document.createElement("button");b.className="bar b";b.textContent=WN[i]+"#";
+  const b=document.createElement("button");const[s1,s2]=BN[WN[i]];b.className="bar b";b.innerHTML=`<span>${s1}</span><span>${s2}</span>`;
   b.style.left=`calc(${(i+1)/16*100}% - ${100/16*0.4}%)`;b.style.width=`${100/16*0.8}%`;
   b.style.height=(100-k*3.5)+"%";b.style.setProperty("--gc","#ffcc00");
-  b.dataset.f=freq(WN[i],OCT[i],1);b.setAttribute("aria-label","Klawisz "+WN[i]+" krzyżyk");
+  b.dataset.f=freq(WN[i],OCT[i],1);b.setAttribute("aria-label","Klawisz "+s1+" / "+s2);
   blackRow.appendChild(b);
 });
 const black=[...blackRow.children];const all=[...white,...black];
-const keyEl=i=>i>=100?black[i-100]:white[i];const keyName=i=>i>=100?WN[BLACK_AFTER[i-100]]+"#":WN[i];
+const keyEl=i=>i>=100?black[i-100]:white[i];const keyName=i=>i>=100?BN[WN[BLACK_AFTER[i-100]]][0]:WN[i];
 all.forEach(b=>b.addEventListener("pointerdown",e=>{e.preventDefault();press(b)}));
 
 let ctx;function audio(){if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();if(ctx.state==="suspended")ctx.resume();return ctx}
@@ -169,8 +175,8 @@ function ding(f){const a=audio(),t=a.currentTime,g=a.createGain();g.gain.setValu
   [[1,1],[2.76,.18],[5.4,.05]].forEach(([m,v])=>{const o=a.createOscillator(),og=a.createGain();o.type="sine";o.frequency.value=f*m;og.gain.value=v;o.connect(og);og.connect(g);o.start(t);o.stop(t+1.9)})}
 function flash(b){ding(+b.dataset.f);b.classList.add("hit");setTimeout(()=>b.classList.remove("hit"),160)}
 
-// g a h = niskie (G5 A5 B5), C..H = środek, c = wysokie C
-const IDX={g:1,a:2,h:3,C:4,D:5,E:6,F:7,G:8,A:9,H:10,c:11,d:12,e:13,f:14,'f#':100};
+// g a h = niskie (G5 A5 H5), C..H = środek, c..f = wysokie, F# = fis nad środkowym F
+const IDX={g:0,a:1,h:2,C:3,D:4,E:5,F:6,G:7,A:8,H:9,c:10,d:11,e:12,f:13,'F#':104};
 const SONGS=[
   {t:"Wlazł kotek",e:"🐱",m:"G E E F D D C:.5 E:.5 G:2 G E E F D D C:.5 E:.5 C:2"},
   {t:"Panie Janie",e:"🔔",m:"C D E C C D E C E F G:2 E F G:2 G:.5 A:.5 G:.5 F:.5 E C G:.5 A:.5 G:.5 F:.5 E C C g C:2 C g C:2"},
@@ -183,7 +189,7 @@ const SONGS=[
   {t:"Most londyński",e:"🌉",m:"G:1.5 A:.5 G F E F G:2 D E F:2 E F G:2 G:1.5 A:.5 G F E F G:2 D:2 G:2 E C:2"},
   {t:"Wiosłuj łódką",e:"🚣",m:"C:1.5 C:1.5 C D:.5 E:1.5 E D:.5 E F:.5 G:3 c:.5 c:.5 c:.5 G:.5 G:.5 G:.5 E:.5 E:.5 E:.5 C:.5 C:.5 C:.5 G D:.5 E D:.5 C:3"},
   {t:"Cicha noc",e:"🌙",m:"G:1.5 A:.5 G E:3 G:1.5 A:.5 G E:3 d:2 d H:3 c:2 c G:3 A:2 A c:1.5 H:.5 A G:1.5 A:.5 G E:3 A:2 A c:1.5 H:.5 A G:1.5 A:.5 G E:3 d:2 d f:1.5 d:.5 H c:3 e:3 c:1.5 G:.5 E G:1.5 F:.5 D C:3"},
-  {t:"Suszarka Samsung (Pstrąg – Schubert)",e:"👕",m:"g:.5 C:.5 C:.5 E:.5 E:.5 C:1 g:.5 g:.5 g:.75 g:.25 D:.25 C:.25 h:.25 a:.25 g:1 g:.5 C:.5 C:.5 E:.5 E:.5 C:1 g:.5 C:.5 h:.5 a:.25 h:.25 C:.5 f#:.5 g:1 g:.5 g:.5 h:.5 h:.5 C:.5 a:.25 h:.25 C:1 g:.5 C:.5 h:.5 h:.5 h:.25 F:.25 D:.25 h:.25 C:1.5 C:.5 a:.5 a:.5 a:.5 C:.5 C:1 g:.5 g:.5 g:.75 g:.25 D:.5 h:.5 C:1.5 C:.5 h:.25 a:.25 a:.5 a:.25 C:.25 h:.25 D:.25 C:1 g:.5 g:.5 g:.75 g:.25 D:.5 h:.5 C:2"},
+  {t:"Suszarka Samsung (Pstrąg – Schubert)",e:"👕",m:"G:.5 c:.5 c:.5 e:.5 e:.5 c:1 G:.5 G:.5 G:.75 G:.25 d:.25 c:.25 H:.25 A:.25 G:1 G:.5 c:.5 c:.5 e:.5 e:.5 c:1 G:.5 c:.5 H:.5 A:.25 H:.25 c:.5 F#:.5 G:1 G:.5 G:.5 H:.5 H:.5 c:.5 A:.25 H:.25 c:1 G:.5 c:.5 H:.5 H:.5 H:.25 f:.25 d:.25 H:.25 c:1.5 c:.5 A:.5 A:.5 A:.5 c:.5 c:1 G:.5 G:.5 G:.75 G:.25 d:.5 H:.5 c:1.5 c:.5 H:.25 A:.25 A:.5 A:.25 c:.25 H:.25 d:.25 c:1 G:.5 G:.5 G:.75 G:.25 d:.5 H:.5 c:2"},
   {t:"Gama w górę i w dół",e:"🪜",m:"C D E F G A H c:2 c H A G F E D C:2"},
   {t:"Śpiewanka do-re-mi-fanka (cała)",e:"🎼",m:"C:.5 D:.5 E:.5 F:.5 G:.5 A:.5 H:.5 c:.5 c:.5 H:.5 A:.5 G:.5 F:.5 E:.5 D:.5 C:.5 C:.5 E:.5 D:.5 F:.5 E:.5 G:.5 F:.5 A:.5 G:.5 H:.5 A:.5 c:.5 H:.5 d:.5 c:.5 c:2 C:1.5 C:.5 C C C C C:2 D:1.5 D:.5 D D D D D:2 E:1.5 E:.5 E E E E E:2 F:1.5 F:.5 F F F F F:2 G:1.5 G:.5 G G G G G:2 A:1.5 A:.5 A A A A A:2 H:1.5 H:.5 H H H H H:2 c:1.5 c:.5 c:.5 c:.5 c:.5 c:.5 c:2 c:.5 A:.5 H:.5 G:.5 A:.5 F:.5 G:.5 E:.5 F:.5 D:.5 E:.5 C:.5 D:.5 h:.5 C:.5 C:2 c:1.5 c:.5 c c c c c:2 H:1.5 H:.5 H H H H H:2 A:1.5 A:.5 A A A A A:2 G:1.5 G:.5 G G G G G:2 F:1.5 F:.5 F F F F F:2 E:1.5 E:.5 E E E E E:2 D:1.5 D:.5 D D D D D:2 C:1.5 C:.5 C:.5 C:.5 C:.5 C:.5 C:2 C:.5 E:.5 D:.5 F:.5 E:.5 G:.5 F:.5 A:.5 G:.5 H:.5 A:.5 c:.5 H:.5 d:.5 c:.5 c:.5 C:.5 D:.5 E:.5 F:.5 G:.5 A:.5 H:.5 c:.5 c:.5 H:.5 A:.5 G:.5 F:.5 E:.5 D:.5 C:2"},
   {t:"Do-re-mi-fanka – zwrotka 1 (w górę)",e:"🎶",m:"C:.5 D:.5 E:.5 F:.5 G:.5 A:.5 H:.5 c:.5 c:.5 H:.5 A:.5 G:.5 F:.5 E:.5 D:.5 C:.5 C:.5 E:.5 D:.5 F:.5 E:.5 G:.5 F:.5 A:.5 G:.5 H:.5 A:.5 c:.5 H:.5 d:.5 c:.5 c:2 C:1.5 C:.5 C C C C C:2 D:1.5 D:.5 D D D D D:2 E:1.5 E:.5 E E E E E:2 F:1.5 F:.5 F F F F F:2 G:1.5 G:.5 G G G G G:2 A:1.5 A:.5 A A A A A:2 H:1.5 H:.5 H H H H H:2 c:1.5 c:.5 c:.5 c:.5 c:.5 c:.5 c:2 c:.5 A:.5 H:.5 G:.5 A:.5 F:.5 G:.5 E:.5 F:.5 D:.5 E:.5 C:.5 D:.5 h:.5 C:.5 C:2"},
@@ -234,7 +240,7 @@ function press(b){flash(b);if(mode!=="learn")return;const seq=SONGS[song].seq;
   else{mistakes++;b.classList.add("oops");setTimeout(()=>b.classList.remove("oops"),300);statusEl.textContent="Prawie! Szukaj świecącego klawisza ✨"}}
 function win(){const st=mistakes===0?3:mistakes<4?2:1;
   statusEl.innerHTML=`Brawo! Zagrałeś całą piosenkę! 🎉 <span class="stars">${"⭐".repeat(st)}${"☆".repeat(3-st)}</span>`;
-  [4,6,8,11].forEach((n,k)=>setTimeout(()=>flash(white[n]),k*140));
+  [3,5,7,10].forEach((n,k)=>setTimeout(()=>flash(white[n]),k*140));
   if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
   const p=document.getElementById("party"),em=["🎉","⭐","🎈","🎵","💖","🌈"];
   for(let k=0;k<30;k++){const s=document.createElement("span");s.className="conf";s.style.background=["#e63b2e","#f4b400","#1f4fd8","#12a150"][k%4];s.style.borderRadius=k%2?"50%":"2px";s.style.left=Math.random()*100+"%";s.style.animationDelay=Math.random()*.8+"s";p.appendChild(s);setTimeout(()=>s.remove(),3200)}}
@@ -245,3 +251,4 @@ renderSongs();drawTrack();
 </script>
 </body>
 </html>
+</body></html>
