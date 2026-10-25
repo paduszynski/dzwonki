@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Dzwonki 1.1 – graj ze mną!</title>
+<title>Dzwonki 1.2 – graj ze mną!</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f3f1ec;--fg:#151515;--panel:#ffffff;--line:#15151518;--muted:#15151599;
@@ -118,7 +118,7 @@ button:focus-visible{outline:3px solid var(--yel);outline-offset:3px}
 <body>
 <div class="app">
   <aside>
-    <div class="logo"><h1>Dzwonki 1.1</h1></div>
+    <div class="logo"><h1>Dzwonki 1.2</h1></div>
     <div class="songs" id="songs" role="group" aria-label="Piosenki"></div>
   </aside>
   <section>
@@ -176,7 +176,7 @@ function ding(f){const a=audio(),t=a.currentTime,g=a.createGain();g.gain.setValu
 function flash(b){ding(+b.dataset.f);b.classList.add("hit");setTimeout(()=>b.classList.remove("hit"),160)}
 
 // g a h = niskie (G5 A5 H5), C..H = środek, c..f = wysokie, F# = fis nad środkowym F
-const IDX={g:0,a:1,h:2,C:3,D:4,E:5,F:6,G:7,A:8,H:9,c:10,d:11,e:12,f:13,'F#':104};
+const IDX={g:0,a:1,h:2,C:3,D:4,E:5,F:6,G:7,A:8,H:9,c:10,d:11,e:12,f:13,'D#':103,'F#':104,'G#':105,'A#':106,'c#':107};
 const SONGS=[
   {t:"Wlazł kotek",e:"🐱",m:"G E E F D D C:.5 E:.5 G:2 G E E F D D C:.5 E:.5 C:2"},
   {t:"Panie Janie",e:"🔔",m:"C D E C C D E C E F G:2 E F G:2 G:.5 A:.5 G:.5 F:.5 E C G:.5 A:.5 G:.5 F:.5 E C C g C:2 C g C:2"},
@@ -190,6 +190,7 @@ const SONGS=[
   {t:"Wiosłuj łódką",e:"🚣",m:"C:1.5 C:1.5 C D:.5 E:1.5 E D:.5 E F:.5 G:3 c:.5 c:.5 c:.5 G:.5 G:.5 G:.5 E:.5 E:.5 E:.5 C:.5 C:.5 C:.5 G D:.5 E D:.5 C:3"},
   {t:"Cicha noc",e:"🌙",m:"G:1.5 A:.5 G E:3 G:1.5 A:.5 G E:3 d:2 d H:3 c:2 c G:3 A:2 A c:1.5 H:.5 A G:1.5 A:.5 G E:3 A:2 A c:1.5 H:.5 A G:1.5 A:.5 G E:3 d:2 d f:1.5 d:.5 H c:3 e:3 c:1.5 G:.5 E G:1.5 F:.5 D C:3"},
   {t:"Suszarka Samsung (Pstrąg – Schubert)",e:"👕",m:"G:.5 c:.5 c:.5 e:.5 e:.5 c:1 G:.5 G:.5 G:.75 G:.25 d:.25 c:.25 H:.25 A:.25 G:1 G:.5 c:.5 c:.5 e:.5 e:.5 c:1 G:.5 c:.5 H:.5 A:.25 H:.25 c:.5 F#:.5 G:1 G:.5 G:.5 H:.5 H:.5 c:.5 A:.25 H:.25 c:1 G:.5 c:.5 H:.5 H:.5 H:.25 f:.25 d:.25 H:.25 c:1.5 c:.5 A:.5 A:.5 A:.5 c:.5 c:1 G:.5 G:.5 G:.75 G:.25 d:.5 H:.5 c:1.5 c:.5 H:.25 A:.25 A:.5 A:.25 c:.25 H:.25 d:.25 c:1 G:.5 G:.5 G:.75 G:.25 d:.5 H:.5 c:2"},
+  {t:"Harry Potter (motyw Hedwigi)",e:"⚡",m:"h:.75 E:1.125 G:.375 F#:.75 E:1.5 H:.75 A:2.25 F#:2.25 E:1.125 G:.375 F#:.75 D#:1.5 F:.75 h:4.5 h:.75 E:1.125 G:.375 F#:.75 E:1.5 H:.75 d:1.5 c#:.75 c:1.5 G#:.75 c:1.125 H:.375 A#:.75 A#:1.5 G:.75 E:4.5"},
   {t:"Gama w górę i w dół",e:"🪜",m:"C D E F G A H c:2 c H A G F E D C:2"},
   {t:"Śpiewanka do-re-mi-fanka (cała)",e:"🎼",m:"C:.5 D:.5 E:.5 F:.5 G:.5 A:.5 H:.5 c:.5 c:.5 H:.5 A:.5 G:.5 F:.5 E:.5 D:.5 C:.5 C:.5 E:.5 D:.5 F:.5 E:.5 G:.5 F:.5 A:.5 G:.5 H:.5 A:.5 c:.5 H:.5 d:.5 c:.5 c:2 C:1.5 C:.5 C C C C C:2 D:1.5 D:.5 D D D D D:2 E:1.5 E:.5 E E E E E:2 F:1.5 F:.5 F F F F F:2 G:1.5 G:.5 G G G G G:2 A:1.5 A:.5 A A A A A:2 H:1.5 H:.5 H H H H H:2 c:1.5 c:.5 c:.5 c:.5 c:.5 c:.5 c:2 c:.5 A:.5 H:.5 G:.5 A:.5 F:.5 G:.5 E:.5 F:.5 D:.5 E:.5 C:.5 D:.5 h:.5 C:.5 C:2 c:1.5 c:.5 c c c c c:2 H:1.5 H:.5 H H H H H:2 A:1.5 A:.5 A A A A A:2 G:1.5 G:.5 G G G G G:2 F:1.5 F:.5 F F F F F:2 E:1.5 E:.5 E E E E E:2 D:1.5 D:.5 D D D D D:2 C:1.5 C:.5 C:.5 C:.5 C:.5 C:.5 C:2 C:.5 E:.5 D:.5 F:.5 E:.5 G:.5 F:.5 A:.5 G:.5 H:.5 A:.5 c:.5 H:.5 d:.5 c:.5 c:.5 C:.5 D:.5 E:.5 F:.5 G:.5 A:.5 H:.5 c:.5 c:.5 H:.5 A:.5 G:.5 F:.5 E:.5 D:.5 C:2"},
   {t:"Do-re-mi-fanka – zwrotka 1 (w górę)",e:"🎶",m:"C:.5 D:.5 E:.5 F:.5 G:.5 A:.5 H:.5 c:.5 c:.5 H:.5 A:.5 G:.5 F:.5 E:.5 D:.5 C:.5 C:.5 E:.5 D:.5 F:.5 E:.5 G:.5 F:.5 A:.5 G:.5 H:.5 A:.5 c:.5 H:.5 d:.5 c:.5 c:2 C:1.5 C:.5 C C C C C:2 D:1.5 D:.5 D D D D D:2 E:1.5 E:.5 E E E E E:2 F:1.5 F:.5 F F F F F:2 G:1.5 G:.5 G G G G G:2 A:1.5 A:.5 A A A A A:2 H:1.5 H:.5 H H H H H:2 c:1.5 c:.5 c:.5 c:.5 c:.5 c:.5 c:2 c:.5 A:.5 H:.5 G:.5 A:.5 F:.5 G:.5 E:.5 F:.5 D:.5 E:.5 C:.5 D:.5 h:.5 C:.5 C:2"},
